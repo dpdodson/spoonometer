@@ -1,0 +1,97 @@
+<style>
+
+:root {
+  --spoonangle: 0deg; <!-- javascript changes this -->
+}
+
+    #spoonometer {
+        width: 400px;
+        height: auto;
+    }
+    #spoonometer img {
+        position: absolute;
+        width: 400px;
+    }
+
+
+    .spoon-animate-week1 {
+    animation: spin-week1 2s ease forwards; /* Adjust duration as needed */
+    -webkit-animation: spin-week1 2s ease forwards; /* Safari and Chrome */
+    -moz-animation: spin-week1 2s ease forwards; /* Firefox */
+    transform-origin: 35.666666666666667% 68.356374807987711%;
+
+    }
+
+@keyframes spin-week1 {
+  from {
+    transform: rotate(0deg); 
+  }
+  to {
+    transform: rotate(var(--spoonangle));
+  }
+}
+
+</style>
+
+<div id="spoonometer">
+    <img src="https://swdev23b.wpengine.com/wp-content/uploads/2024/04/spoonometer.png">
+    <img class="spoon" src="https://swdev23b.wpengine.com/wp-content/uploads/2024/04/spoon-1.png">
+</div>
+
+
+<script>
+
+// Sets the rotation for the spoon, increasing every day
+// Get the current date
+const currentDate = new Date();
+
+// Set the start date for the change
+const startDate = new Date('2024-03-11');
+
+// Calculate the number of days since the start date
+const timeDiff = Math.abs(currentDate.getTime() - startDate.getTime());
+const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+// Calculate the new angle with a limit of 180 degrees
+const newAngle = Math.min(daysDiff, 180);
+
+// Update the CSS variable
+document.documentElement.style.setProperty('--spoonangle', `${newAngle}deg`);
+
+
+
+
+// Function to handle intersection observer events
+function handleIntersection(entries, observer) {
+  entries.forEach(entry => {
+
+    if (entry.isIntersecting) {
+	      // Element is now in viewport
+	      setTimeout(() => {
+	        // Add the class 'spoon-animate' to the element
+	        entry.target.classList.add('spoon-animate-week1');
+
+	      }, 1000);
+
+	      // Stop observing the element
+	      observer.unobserve(entry.target);
+    }
+
+  });
+}
+
+// Create a new intersection observer
+const observer = new IntersectionObserver(handleIntersection, {
+  root: null, // Use the viewport as the root
+  threshold: 0.5, // Trigger when 50% of the element is visible
+});
+
+// Find all elements with class 'spoon' and observe each one
+
+
+document.querySelectorAll('.spoon').forEach(element => {
+  observer.observe(element);
+});
+
+
+</script>
